@@ -4,10 +4,17 @@ const axios = require('axios');
 const cors = require('cors');
 const app = express();
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-  credentials: true,
-}));
+
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://staging-irys.skdiv.com"],
+    credentials: true,
+  })
+);
+
+app.get("/", (req, res) => {
+  res.send("Welcome to the Google OAuth 2.0 Integration API");
+});
 
 app.get('/auth/google/callback', async (req, res) => {
   const code = req.query.code;
@@ -27,7 +34,7 @@ app.get('/auth/google/callback', async (req, res) => {
     );
     // Send tokens back to frontend as a redirect with query
     const tokens = encodeURIComponent(JSON.stringify(tokenRes.data));
-    res.redirect(`http://localhost:5173/settings?tab=data-sync&token=${tokens}`);
+    res.redirect(`https://staging-irys.skdiv.com/settings?tab=data-sync&token=${tokens}`);
   } catch (err) {
     console.error('Token exchange error:', err.response?.data || err.message);
     res.status(500).send('Token exchange failed');
